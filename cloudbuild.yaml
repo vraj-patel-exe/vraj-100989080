@@ -1,14 +1,26 @@
 steps:
+  # Step 1: Build Docker Image
   - name: "gcr.io/cloud-builders/docker"
     args:
       - "build"
       - "-t"
       - "us-central1-docker.pkg.dev/$PROJECT_ID/vraj-100989080/app:$COMMIT_SHA"
       - "."
+
+  # Step 2: Push to Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
     args:
       - "push"
       - "us-central1-docker.pkg.dev/$PROJECT_ID/vraj-100989080/app:$COMMIT_SHA"
-options:
-  logging: CLOUD_LOGGING_ONLY
-  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+
+  # Step 3: Deploy to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    args:
+      - "gcloud"
+      - "run"
+      - "deploy"
+      - "vraj-app"
+      - "--image=us-central1-docker.pkg.dev/$PROJECT_ID/vraj-100989080/app:$COMMIT_SHA"
+      - "--region=us-central1"
+      - "--platform=managed"
+      - "--allow-unauthenticated"
