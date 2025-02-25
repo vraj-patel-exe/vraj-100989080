@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose the port that your app listens on (adjust if your app listens on a different port)
-EXPOSE 8080
+EXPOSE 3000
 
 # Define environment variable (if required)
 ENV NODE_ENV production
